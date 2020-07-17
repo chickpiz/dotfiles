@@ -5,16 +5,16 @@ Default
 ---------
 
 Install default packages and configurations:
-    - zsh
+    * zsh
         oh-my-zshell (powerlevel10k theme) 
             autojump
             autosuggestions 
-    - emacs
+    * emacs
         doom emacs
             editor tools 
             lsp
-    - tmux
-    - etc
+    * tmux
+    * etc
         envvars (*Settings for custom environment variables*)
         
 Optional
