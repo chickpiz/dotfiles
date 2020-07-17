@@ -17,7 +17,6 @@ function pkg_install {
 #   INCLUDED PACKAGES:
 #       zsh emacs tmux
 
-
 function zsh_setup {
     echo "[*] zsh_setup"
 
@@ -34,8 +33,6 @@ function zsh_setup {
 
     # Need to make not get password
     chsh -s $(which zsh)
-
-	# zsh
 }
 
 function emacs_setup {
@@ -43,23 +40,28 @@ function emacs_setup {
 
     pkg_install "emacs26"
 
-	git clone --depth 1 https://github.com/hlissner/doom-emacs $HOME/.emacs.d
-	$HOME/.emacs.d/bin/doom install
+    git clone --depth 1 https://github.com/hlissner/doom-emacs $HOME/.emacs.d
+    $HOME/.emacs.d/bin/doom install
 
-	# rm $HOME/.doom.d/*
-	# ln -s $DEFULAT/emacs/
+    rm -r $HOME/.doom.d
+    ln -s $DEFULAT/emacs/.doom.d $HOME/.doom.d
+    $HOME/.emacs.d/doom sync
 }
 
 function tmux_setup {
-	echo "[*] tmux_setup"
+    echo "[*] tmux_setup"
 
-	pkg_install "tmux"
+    pkg_install "tmux"
+    ln -s $DEFULAT/tmux/tmux.conf $HOME/.tmux.conf
 }
 
 
-#zsh_setup
-emacs_setup
-# tmux_setup
+main () {
+    zsh_setup
+    emacs_setup
+    tmux_setup
 
+    zsh
+}
 
 # SETTING UP OPTIONAL PACKAGES
