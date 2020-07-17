@@ -1,13 +1,15 @@
 #!/bin/bash
 
+DEFAULT=$PWD/default
+
 # CHECK PACKAGE
 function pkg_install {
-    if apt-cache policy $1 | grep -q Installed
+    if apt-cache policy $1 | grep -q 'Installed: (none)'
     then 
-        echo "[-] $1 is already installed"
-    else
         sudo apt-get install -y $1
         echo "yes"
+    else
+        echo "[-] $1 is already installed"
     fi
 }
 
@@ -21,24 +23,43 @@ function zsh_setup {
 
     pkg_install "zsh"
 
-    sudo chsh -s $(which zsh)
-    echo "Should reboot"
-    zsh
+    source $DEFAULT/zsh/ohmyzsh.sh --skip-chsh
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+    pkg_install "autojump"
+    git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
-    pkg_install "curl"
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    rm $HOME/.zshrc
+    ln -s $DEFAULT/zsh/zshrc $HOME/.zshrc
+    ln -s $DEFAULT/zsh/p10k.zsh $HOME/.p10k.zsh
 
-    ln -s rc/zshrc $HOME/.zshrc
+    # Need to make not get password
+    chsh -s $(which zsh)
+
+	# zsh
 }
 
 function emacs_setup {
     echo "[*] emacs_setup"
 
-    pkg_install "emacs"
+    pkg_install "emacs26"
+
+	git clone --depth 1 https://github.com/hlissner/doom-emacs $HOME/.emacs.d
+	$HOME/.emacs.d/bin/doom install
+
+	# rm $HOME/.doom.d/*
+	# ln -s $DEFULAT/emacs/
 }
 
-zsh_setup
+function tmux_setup {
+	echo "[*] tmux_setup"
+
+	pkg_install "tmux"
+}
+
+
+#zsh_setup
 emacs_setup
+# tmux_setup
 
 
 # SETTING UP OPTIONAL PACKAGES
