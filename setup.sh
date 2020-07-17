@@ -4,12 +4,12 @@ DEFAULT=$PWD/default
 
 # CHECK PACKAGE
 function pkg_install {
-    if apt-cache policy $1 | grep -q 'Installed: (none)'
+    if command -v $1 
     then 
+        echo "[-] $1 is already installed"
+    else
         sudo apt-get install -y $1
         echo "yes"
-    else
-        echo "[-] $1 is already installed"
     fi
 }
 
@@ -44,24 +44,79 @@ function emacs_setup {
     $HOME/.emacs.d/bin/doom install
 
     rm -r $HOME/.doom.d
-    ln -s $DEFULAT/emacs/.doom.d $HOME/.doom.d
-    $HOME/.emacs.d/doom sync
+    ln -s $DEFAULT/emacs/doom.d $HOME/.doom.d
+    $HOME/.emacs.d/bin/doom sync
+
+    # INSTALL BEAR (SUPPORT FOR LSP)
+    pkg_install "bear"
+
+    # INSTALL CCLS (SUPPORT FOR LSP)
+    if lsb_release -a | grep -q '20.04'
+    then
+	pkg_install "ccls"
+    else
+	if command -v "ccls" 
+	then
+	    echo "[-] ccls is already installed"
+	    CCLS_PATH=$(which ccls)
+	else
+	    pushd $HOME/.emacs.d
+	    git clone --depth=1 --recursive https://github.com/MaskRay/ccls -o ccls
+	    popd
+
+	    pushd $HOME/.emacs.d/ccls
+	    wget -c http://releases.llvm.org/8.0.0/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz
+	    tar xf clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz
+	    cmake -H. -BRelease -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$PWD/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-18.04
+	    cmake --build Release
+	    rm clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz
+	    popd 
+
+	    CCLS_PATH=$HOME/.emacs.d/ccls/Release
+	    echo "PATH=$PATH:${CCLS_PATH}" >> $HOME/.envvars
+	fi
+    fi
+
+    # # INSTALL CMAKE 3.18 (SUPPORT FOR VTERM)
+    # if cmake --version | grep -q 3.18
+    # then
+    # else
+    #     pushd $HOME/.emacs.d
+    #     wget https://github.com/Kitware/CMake/releases/download/v3.18.0/cmake-3.18.0.tar.gz
+    #     tar xvf cmake-3.18.0.tar.gz
+    #     popd 
+
+    #     pushd $HOME/emacs.d/cmake-3.18.0
+    #     make
+    #     popd
+    # fi
+
 }
 
 function tmux_setup {
     echo "[*] tmux_setup"
 
     pkg_install "tmux"
-    ln -s $DEFULAT/tmux/tmux.conf $HOME/.tmux.conf
+    ln -s $DEFAULT/tmux/tmux.conf $HOME/.tmux.conf
 }
 
 
-main () {
+function default_setup {
+    cp $DEFAULT/etc/envvars $HOME/.envvars
+
     zsh_setup
     emacs_setup
     tmux_setup
-
-    zsh
 }
 
 # SETTING UP OPTIONAL PACKAGES
+
+function optional_setup {
+    echo "[*] optional setup"
+}
+
+# MAIN
+
+default_setup
+optional_setup
+zsh
