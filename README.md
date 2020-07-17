@@ -1,21 +1,27 @@
-Dotfiles for *Linux systems
+Dotfiles for -Linux systems
 =============================
 
 Default
 ---------
 
 Install default packages and configurations:
-    * zsh
+* zsh
+* emacs
+* tmux
+* etc
+
+
+    - zsh
         oh-my-zshell (powerlevel10k theme) 
             autojump
             autosuggestions 
-    * emacs
+    - emacs
         doom emacs
             editor tools 
             lsp
-    * tmux
-    * etc
-        envvars (*Settings for custom environment variables*)
+    - tmux
+    - etc
+        envvars (-Settings for custom environment variables-)
         
 Optional
 ---------
