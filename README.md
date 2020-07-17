@@ -5,12 +5,12 @@ Default
 ---------
 
 Install default packages and configurations:
-* zsh
+* **zsh** <br />
  oh-my-zshell (powerlevel10k theme)
-* emacs
+* **emacs** <br />
  doom emacs
-* tmux
-* etc
+* **tmux**
+* **etc** <br />
  envvars (**Settings for custom environment variables**)
 
 
@@ -19,5 +19,5 @@ Optional
 
 Install optional packages and configurations
 
-*To Do*
+**To Do**
       
