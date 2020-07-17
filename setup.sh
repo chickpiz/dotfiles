@@ -9,7 +9,6 @@ function pkg_install {
         echo "[-] $1 is already installed"
     else
         sudo apt-get install -y $1
-        echo "yes"
     fi
 }
 
