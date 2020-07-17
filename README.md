@@ -1,11 +1,10 @@
-# dotfiles
 Dotfiles for *Linux systems
 =============================
 
 Default
 ---------
 
-Install default packages and configurations
+Install default packages and configurations:
     - zsh
         oh-my-zshell (powerlevel10k theme) 
             autojump
