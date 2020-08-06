@@ -19,5 +19,7 @@ Optional
 
 Install optional packages and configurations
 
+* **vifm** <br />
+
 **To Do**
       

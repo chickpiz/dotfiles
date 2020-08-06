@@ -1,6 +1,7 @@
 #!/bin/bash
 
 DEFAULT=$PWD/default
+OPTIONAL=$PWD/optional
 
 # CHECK PACKAGE
 function pkg_install {
@@ -12,9 +13,10 @@ function pkg_install {
     fi
 }
 
-# SETTING UP DEFAULT PACKAGES
-#   INCLUDED PACKAGES:
-#       zsh emacs tmux
+#################### SETTING UP DEFAULT PACKAGES #################### 
+#   INCLUDED PACKAGES:                                              #
+#       zsh emacs tmux                                              #
+##################################################################### 
 
 function zsh_setup {
     echo "[*] zsh_setup"
@@ -99,6 +101,20 @@ function tmux_setup {
     ln -s $DEFAULT/tmux/tmux.conf $HOME/.tmux.conf
 }
 
+#################### SETTING UP OPTIONAL PACKAGES ################### 
+#   INCLUDED PACKAGES:                                              #
+#       vifm                                                        #
+#####################################################################
+
+function vifm_setup {
+    echo "[*] vifm_setup"
+
+    pkg_install "vifm"
+    rm -rf ~/.vifm
+    ln -s $OPTIONAL/vifm $HOME/.vifm
+}
+
+#####################################################################
 
 function default_setup {
     cp $DEFAULT/etc/envvars $HOME/.envvars
@@ -108,10 +124,18 @@ function default_setup {
     tmux_setup
 }
 
-# SETTING UP OPTIONAL PACKAGES
-
 function optional_setup {
     echo "[*] optional setup"
+
+    echo "[*] install vifm? [y/n]"
+    read -r vifm
+
+    if [ "$vifm" == "y" ]
+    then
+        vifm_setup
+    fi
+
+    echo vifm is $vifm
 }
 
 # MAIN
