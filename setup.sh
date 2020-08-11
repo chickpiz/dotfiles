@@ -39,6 +39,8 @@ function zsh_setup {
 function emacs_setup {
     echo "[*] emacs_setup"
 
+    sudo add-apt-repository ppa:kelleyk/emacs
+    sudo apt-get update
     pkg_install "emacs26"
 
     git clone --depth 1 https://github.com/hlissner/doom-emacs $HOME/.emacs.d
@@ -101,6 +103,17 @@ function tmux_setup {
     ln -s $DEFAULT/tmux/tmux.conf $HOME/.tmux.conf
 }
 
+function i3_setup {
+    echo "[*] i3_setup"
+
+    pkg_install "i3"
+    mkdir -p $HOME/.config
+    mkdir -p $HOME/.config/i3
+
+    ln -s $DEFAULT/i3/config $HOME/.config/i3/config
+    ln -s $DEFAULT/i3/slow_mouse.sh $HOME/.config/i3/slow_mouse.sh
+}
+
 #################### SETTING UP OPTIONAL PACKAGES ################### 
 #   INCLUDED PACKAGES:                                              #
 #       vifm                                                        #
@@ -122,6 +135,7 @@ function default_setup {
     zsh_setup
     emacs_setup
     tmux_setup
+    i3_setup
 }
 
 function optional_setup {

@@ -10,6 +10,7 @@ Install default packages and configurations:
 * **emacs** <br />
  doom emacs
 * **tmux**
+* **i3**
 * **etc** <br />
  envvars (**Settings for custom environment variables**)
 
