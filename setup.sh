@@ -116,15 +116,13 @@ function i3_setup {
 
 #################### SETTING UP OPTIONAL PACKAGES ################### 
 #   INCLUDED PACKAGES:                                              #
-#       vifm                                                        #
+#       ranger                                                      #
 #####################################################################
 
-function vifm_setup {
-    echo "[*] vifm_setup"
+function ranger_setup {
+    echo "[*] ranger_setup"
 
-    pkg_install "vifm"
-    rm -rf ~/.vifm
-    ln -s $OPTIONAL/vifm $HOME/.vifm
+    pkg_install "ranger"
 }
 
 #####################################################################
@@ -141,15 +139,13 @@ function default_setup {
 function optional_setup {
     echo "[*] optional setup"
 
-    echo "[*] install vifm? [y/n]"
-    read -r vifm
+    echo "[*] install ranger? [y/n]"
+    read -r ranger
 
-    if [ "$vifm" == "y" ]
+    if [ "$ranger" == "y" ]
     then
-        vifm_setup
+        ranger_setup
     fi
-
-    echo vifm is $vifm
 }
 
 # MAIN

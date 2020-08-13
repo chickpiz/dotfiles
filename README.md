@@ -20,7 +20,7 @@ Optional
 
 Install optional packages and configurations
 
-* **vifm** <br />
+* **ranger** <br />
 
 **To Do**
       
