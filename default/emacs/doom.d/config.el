@@ -62,3 +62,6 @@
 (add-hook 'c-mode-hook 'run-custom-hooks)
 (add-hook 'c++-mode-hook 'run-custom-hooks)
 (add-hook 'python-mode-hook 'run-custom-hooks)
+
+;; doom emacs uses 'better-jumper', however 'xref-pop-marker-stack' is better
+(map! [remap xref-pop-marker-stack] nil)

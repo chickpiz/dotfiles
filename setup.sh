@@ -107,11 +107,13 @@ function i3_setup {
     echo "[*] i3_setup"
 
     pkg_install "i3"
-    mkdir -p $HOME/.config
-    mkdir -p $HOME/.config/i3
+    pkg_install "i3blocks"
+    pkg_install "rofi"
 
-    ln -s $DEFAULT/i3/config $HOME/.config/i3/config
-    ln -s $DEFAULT/i3/slow_mouse.sh $HOME/.config/i3/slow_mouse.sh
+    mkdir -p $HOME/.config
+
+    ln -s $DEFULAT/i3/i3 $HOME/.config/i3
+    ln -s $DEFAULT/i3/i3blocks $HOME/.config/i3blocks
 }
 
 #################### SETTING UP OPTIONAL PACKAGES ################### 
