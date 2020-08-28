@@ -5,17 +5,34 @@ OPTIONAL=$PWD/optional
 
 # CHECK PACKAGE
 function pkg_install {
-    if command -v $1 
-    then 
-        echo "[-] $1 is already installed"
-    else
-        sudo apt-get install -y $1
+    for name in $1
+    do
+        if [[ $name != "\\" ]]
+        then
+            if [[ $(dpkg -s ${name} | grep Status) == *"installed" ]]
+            then 
+                echo "[-] $1 is already installed"
+            else
+                sudo apt-get install -y $1
+            fi
+        fi
+    done
+}
+
+# ASK AND SETUP
+function ask_setup {
+    echo "[*] install ${1}? [y/n]"
+    read -r answer
+
+    if [ "$answer" == "y" ]
+    then
+        ${1}_setup
     fi
 }
 
 #################### SETTING UP DEFAULT PACKAGES #################### 
 #   INCLUDED PACKAGES:                                              #
-#       zsh emacs tmux                                              #
+#       zsh emacs tmux vim git                                      #
 ##################################################################### 
 
 function zsh_setup {
@@ -116,15 +133,59 @@ function i3_setup {
     ln -s $DEFAULT/i3/i3blocks $HOME/.config/i3blocks
 }
 
+function vim_setup {
+    pkg_install "vim"
+
+    ln -s $DEFAULT/vim/vimrc $HOME/.vimrc
+}
+
+function git_setup {
+    echo "[*] git_setup"
+
+    pkg_inistall "git"
+
+    ln -s $DEFAULT/git/.gitconfig $HOME/.gitconfig
+    echo "[-] git config --global user.name: "
+    read -r username
+    git config --global user.name $username
+
+    echo "[-] git config --global user.email: "
+    read -r useremail
+    git config --global user.email $useremail
+
+    cp $DEFAULT/git/gitmessage.txt $HOME/.gitmessage.txt
+}
+
 #################### SETTING UP OPTIONAL PACKAGES ################### 
 #   INCLUDED PACKAGES:                                              #
-#       ranger                                                      #
+#       ranger pyenv                                                #
 #####################################################################
 
 function ranger_setup {
     echo "[*] ranger_setup"
 
     pkg_install "ranger"
+}
+
+function pyenv_setup {
+    echo "[*] pyenv_setup"
+    pkg_install "make build-essential libssl-dev zlib1g-dev libbz2-dev \
+                libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+                xz-utils tk-dev libffi-dev liblzma-dev python-openssl git libedit-dev python"
+
+    git clone https://github.com/pyenv/pyenv.git $HOME/.pyenv
+    git clone git://github.com/pyenv/pyenv-update.git ~/.pyenv/plugins/pyenv-update
+
+    echo 'export PYENV_ROOT="$HOME/.pyenv"' >> $HOME/.zshrc
+    echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> $HOME/.zshrc
+    echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> $HOME/.zshrc
+
+    pyenv update
+    pyenv install --list
+    echo "[-] python version to install: "
+    read -r version
+
+    pyenv install $version
 }
 
 #####################################################################
@@ -136,22 +197,24 @@ function default_setup {
     emacs_setup
     tmux_setup
     i3_setup
+    vim_setup
+    git_setup
 }
 
 function optional_setup {
     echo "[*] optional setup"
 
-    echo "[*] install ranger? [y/n]"
-    read -r ranger
+    ask_setup ranger
+    ask_setup pyenv
 
-    if [ "$ranger" == "y" ]
-    then
-        ranger_setup
-    fi
 }
 
 # MAIN
-
-default_setup
-optional_setup
-zsh
+if [[ ${1} == "" ]]
+then
+    default_setup
+    optional_setup
+    zsh
+else
+    ${1}_setup
+fi
