@@ -126,6 +126,7 @@ function i3_setup {
     pkg_install "i3"
     pkg_install "i3blocks"
     pkg_install "rofi"
+    pkg_install "feh"
 
     mkdir -p $HOME/.config
 
