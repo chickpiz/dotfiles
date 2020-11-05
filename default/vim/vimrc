@@ -160,4 +160,6 @@ nnoremap <C-L> :nohl<CR><C-L>
 
 colo desert
 
+au BufNewFile,BufRead *.v,*.vh,*.sv,*.svh so ~/.vim/syntax/verilog_systemverilog.vim
+
 "--------------------------------------------------------------
