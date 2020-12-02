@@ -21,6 +21,7 @@ Optional
 Install optional packages and configurations
 
 * **ranger** <br />
+* **pyenv** <br />
 
 **To Do**
       
