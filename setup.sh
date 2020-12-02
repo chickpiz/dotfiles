@@ -3,6 +3,11 @@
 DEFAULT=$PWD/default
 OPTIONAL=$PWD/optional
 
+# HELP
+function help {
+    grep "^function.*setup" $0 | awk '{print $2}' | awk -F_ '{print $1}'
+}
+
 # CHECK PACKAGE
 function pkg_install {
     for name in $1
@@ -19,8 +24,8 @@ function pkg_install {
     done
 }
 
-# ASK AND SETUP
-function ask_setup {
+# ASK AND INSTALL
+function ask_install {
     echo "[*] install ${1}? [y/n]"
     read -r answer
 
@@ -111,6 +116,8 @@ function emacs_setup {
     #     popd
     # fi
 
+    # INSTALL Fira code font
+    pkg_install "fonts-firacode"
 }
 
 function tmux_setup {
@@ -205,8 +212,8 @@ function default_setup {
 function optional_setup {
     echo "[*] optional setup"
 
-    ask_setup ranger
-    ask_setup pyenv
+    ask_install ranger
+    ask_install pyenv
 
 }
 
@@ -216,6 +223,10 @@ then
     default_setup
     optional_setup
     zsh
+elif [[ ${1} == "help" ]]
+then
+    echo "[*] List of available packages"
+    help
 else
     ${1}_setup
 fi

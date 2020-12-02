@@ -19,8 +19,8 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
-;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
+(setq doom-font (font-spec :family "Fira Code" :size 16) ;; :weight 'semi-light)
+      doom-variable-pitch-font (font-spec :family "sans" :size 16))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -59,9 +59,24 @@
   (smartparens-mode 1)
   )
 
+(defun run-tex-hooks ()
+  (setq-default fill-column 60)
+  (auto-fill-mode 1)
+  (flyspell-mode 1)
+  )
+
 (add-hook 'c-mode-hook 'run-custom-hooks)
 (add-hook 'c++-mode-hook 'run-custom-hooks)
 (add-hook 'python-mode-hook 'run-custom-hooks)
 
+(add-hook 'Tex-mode-hook 'run-tex-hooks)
+
 ;; doom emacs uses 'better-jumper', however 'xref-pop-marker-stack' is better
 (map! [remap xref-pop-marker-stack] nil)
+
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(flyspell-incorrect ((t (:background "red" :underline nil)))))
