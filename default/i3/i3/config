@@ -150,7 +150,10 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 # i3lock with random images in Pictures directory
-bindsym $mod+q exec --no-startup-id i3lock # -i $(find $HOME/Pictures/ -name "*.png" | shuf -n1)
+# Single monitor
+# bindsym $mod+q exec --no-startup-id i3lock -i $(find $HOME/Pictures/ -name "*.png" | shuf -n1)
+# Dual monitor
+# bindsym $mod+q exec --no-startup-id $HOME/.config/i3/i3lock-multimonitor/lock -i $(find $HOME/Pictures/ -name "*.png" | shuf -n1)
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
@@ -200,4 +203,7 @@ exec --no-startup-id ibus-daemon -drx
 exec setxkbmap -option "ctrl:nocaps"
 
 # i3 with random wall papers in Pictures directory
-# exec --no-startup-id feh --randomize --fullscreen -bg-fill $HOME/Pictures/*
+# Single monitor 
+# exec --no-startup-id feh --randomize --fullscreen -bg-fill $HOME/Pictures/*.png
+# Dual monitor
+# exec --no-startup-id feh --randomize --bg-fill $HOME/Pictures/*.png --bg-center $HOME/Pictures/*.png

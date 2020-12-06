@@ -48,7 +48,11 @@ function zsh_setup {
     source $DEFAULT/zsh/ohmyzsh.sh --skip-chsh
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
     pkg_install "autojump"
-    git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+    git clone https://github.com/wting/autojump ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/autojump
+    pushd ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/autojump
+    ./install.py
+    popd
+    git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
     rm $HOME/.zshrc
     ln -s $DEFAULT/zsh/zshrc $HOME/.zshrc
@@ -131,6 +135,7 @@ function i3_setup {
     echo "[*] i3_setup"
 
     pkg_install "i3"
+    pkg_install "i3lock"
     pkg_install "i3blocks"
     pkg_install "rofi"
     pkg_install "feh"
@@ -139,6 +144,9 @@ function i3_setup {
 
     ln -s $DEFULAT/i3/i3 $HOME/.config/i3
     ln -s $DEFAULT/i3/i3blocks $HOME/.config/i3blocks
+
+    git clone https://github.com/shikherverma/i3lock-multimonitor $HOME/.config/i3/i3lock-multimonitor
+    sudo chmod +x $HOME/.config/i3/i3lock-multimonitor/lock
 }
 
 function vim_setup {
