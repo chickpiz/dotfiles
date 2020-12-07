@@ -35,10 +35,30 @@ function ask_install {
     fi
 }
 
-#################### SETTING UP DEFAULT PACKAGES #################### 
+#################### SETTING UP MINIMIZL PACKAGES ###################
+#   INCLUDED PACKAGES:                                              #
+#       htop python                                                 #
+#####################################################################
+
+function minimal_setup {
+    echo "[*] minimal_setup"
+
+    echo "[*] htop_setup"
+    pkg_install "htop"
+
+    echo "[*] python_setup"
+    pkg_install "python"
+    pkg_install "python3" 
+
+    echo "[*] arandr_setup"
+    pkg_install "arandr"
+}
+
+
+#################### SETTING UP DEFAULT PACKAGES ####################
 #   INCLUDED PACKAGES:                                              #
 #       zsh emacs tmux vim git                                      #
-##################################################################### 
+#####################################################################
 
 function zsh_setup {
     echo "[*] zsh_setup"
@@ -49,14 +69,15 @@ function zsh_setup {
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
     pkg_install "autojump"
     git clone https://github.com/wting/autojump ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/autojump
+
     pushd ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/autojump
     ./install.py
     popd
     git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
     rm $HOME/.zshrc
-    ln -s $DEFAULT/zsh/zshrc $HOME/.zshrc
-    ln -s $DEFAULT/zsh/p10k.zsh $HOME/.p10k.zsh
+    cp $DEFAULT/zsh/zshrc $HOME/.zshrc
+    cp $DEFAULT/zsh/p10k.zsh $HOME/.p10k.zsh
 
     # Need to make not get password
     chsh -s $(which zsh)
@@ -73,7 +94,7 @@ function emacs_setup {
     $HOME/.emacs.d/bin/doom install
 
     rm -r $HOME/.doom.d
-    ln -s $DEFAULT/emacs/doom.d $HOME/.doom.d
+    cp $DEFAULT/emacs/doom.d $HOME/.doom.d
     $HOME/.emacs.d/bin/doom sync
 
     # INSTALL BEAR (SUPPORT FOR LSP)
@@ -102,7 +123,7 @@ function emacs_setup {
 	    popd 
 
 	    CCLS_PATH=$HOME/.emacs.d/ccls/Release
-	    echo "PATH=$PATH:${CCLS_PATH}" >> $HOME/.envvars
+	    echo "PATH=$PATH:${CCLS_PATH}" >> $HOME/.envvars.sh
 	fi
     fi
 
@@ -128,7 +149,7 @@ function tmux_setup {
     echo "[*] tmux_setup"
 
     pkg_install "tmux"
-    ln -s $DEFAULT/tmux/tmux.conf $HOME/.tmux.conf
+    cp $DEFAULT/tmux/tmux.conf $HOME/.tmux.conf
 }
 
 function i3_setup {
@@ -142,8 +163,9 @@ function i3_setup {
 
     mkdir -p $HOME/.config
 
-    ln -s $DEFULAT/i3/i3 $HOME/.config/i3
-    ln -s $DEFAULT/i3/i3blocks $HOME/.config/i3blocks
+    cp $DEFULAT/i3/i3 $HOME/.config/i3
+    cp -r $DEFAULT/i3/i3status $HOME/.config/i3status
+    cp -r $DEFAULT/i3/i3blocks $HOME/.config/i3blocks
 
     git clone https://github.com/shikherverma/i3lock-multimonitor $HOME/.config/i3/i3lock-multimonitor
     sudo chmod +x $HOME/.config/i3/i3lock-multimonitor/lock
@@ -152,15 +174,15 @@ function i3_setup {
 function vim_setup {
     pkg_install "vim"
 
-    ln -s $DEFAULT/vim/vimrc $HOME/.vimrc
+    cp -s $DEFAULT/vim/vimrc $HOME/.vimrc
 }
 
 function git_setup {
     echo "[*] git_setup"
 
-    pkg_inistall "git"
+    pkg_install "git"
 
-    ln -s $DEFAULT/git/.gitconfig $HOME/.gitconfig
+    cp $DEFAULT/git/.gitconfig $HOME/.gitconfig
     echo "[-] git config --global user.name: "
     read -r username
     git config --global user.name $username
@@ -168,6 +190,9 @@ function git_setup {
     echo "[-] git config --global user.email: "
     read -r useremail
     git config --global user.email $useremail
+
+    echo "[-] git config --global editor"
+    git config --global core.editor vim
 
     cp $DEFAULT/git/gitmessage.txt $HOME/.gitmessage.txt
 }
@@ -207,7 +232,7 @@ function pyenv_setup {
 #####################################################################
 
 function default_setup {
-    cp $DEFAULT/etc/envvars $HOME/.envvars
+    cp $DEFAULT/etc/envvars.sh $HOME/.envvars.sh
 
     zsh_setup
     emacs_setup
@@ -228,6 +253,7 @@ function optional_setup {
 # MAIN
 if [[ ${1} == "" ]]
 then
+    minimal_setup
     default_setup
     optional_setup
     zsh

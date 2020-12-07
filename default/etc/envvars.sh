@@ -1,5 +1,2 @@
 # SETTINGS FOR CUSTOM ENVIRONMENT VARIABLES
 
-# Ranger
-export VISUAL=vim
-export EDITOR=vim
