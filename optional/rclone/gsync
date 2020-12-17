@@ -1,0 +1,22 @@
+#!/bin/bash
+
+path=$(realpath ${1:-.})
+
+if [ ! -f $path ];
+then
+    if [ ! -d $path ];
+    then
+        echo "$path does not exist"
+        exit 0
+    fi
+fi
+
+if [[ ! "$path" == *"google-drive"* ]];
+then
+    echo "$path is not in google-drive"
+    exit 0
+fi
+relpath=${path#*google-drive}
+
+rclone copy --update --verbose --transfers 30 --checkers 8 --contimeout 60s --timeout 300s --retries 3 --low-level-retries 10 --stats 1s --stats-file-name-length 0 "$path" "google-drive:/$relpath"
+rclone copy --update --verbose --transfers 30 --checkers 8 --contimeout 60s --timeout 300s --retries 3 --low-level-retries 10 --stats 1s --stats-file-name-length 0 "google-drive:/$relpath" "$path"

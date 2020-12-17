@@ -118,7 +118,7 @@ function emacs_setup {
             popd 
 
             CCLS_PATH=$HOME/.emacs.d/ccls/Release
-            echo "PATH=$PATH:${CCLS_PATH}" >> $HOME/.envvars.sh
+            PATH=$PATH:${CCLS_PATH}
         fi
     fi
 
@@ -203,7 +203,7 @@ function git_setup {
 
 #################### SETTING UP OPTIONAL PACKAGES ################### 
 #   INCLUDED PACKAGES:                                              #
-#       ranger pyenv                                                #
+#       ranger pyenv rclone                                         #
 #####################################################################
 
 function ranger_setup {
@@ -221,8 +221,10 @@ function pyenv_setup {
     git clone https://github.com/pyenv/pyenv.git $HOME/.pyenv
     git clone git://github.com/pyenv/pyenv-update.git ~/.pyenv/plugins/pyenv-update
 
-    echo 'export PYENV_ROOT="$HOME/.pyenv"' >> $HOME/.zshrc
-    echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> $HOME/.zshrc
+    echo 'PYENV_ROOT="$HOME/.pyenv"' >> $HOME/.envvar
+    # echo 'export PYENV_ROOT="$HOME/.pyenv"' >> $HOME/.zshrc
+    PATH=${PYENV_ROOT/bin}:$PATH
+    # echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> $HOME/.zshrc
     echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> $HOME/.zshrc
 
     pyenv update
@@ -233,17 +235,31 @@ function pyenv_setup {
     pyenv install $version
 }
 
+function rclone_setup {
+    echo "[*] rclone_setup"
+    pkg_install "rclone"
+
+    echo "[-] configure rclone, must set name: google-drive"
+    rclone config
+
+    mkdir $HOME/google-drive
+    sudo ln -s $OPTIONAL/rclone/gsync /usr/bin/rclone
+
+    echo "[-] register auto-backup"
+    (crontabl -l 2>/dev/null; echo "0 0 * * * gsync $HOME/google-drive > /dev/nul 2>&1") | crontab -e 
+}
+
 #####################################################################
 
 function default_setup {
-    cp $DEFAULT/etc/envvars.sh $HOME/.envvars.sh
+    echo "[*] default setup"
 
+    git_setup
     zsh_setup
     emacs_setup
     tmux_setup
     i3_setup
     vim_setup
-    git_setup
 }
 
 function optional_setup {
@@ -251,15 +267,20 @@ function optional_setup {
 
     ask_install ranger
     ask_install pyenv
-
+    ask_install rclone
 }
 
 # MAIN
 if [[ ${1} == "" ]]
 then
+    cp $DEFAULT/etc/envvars $HOME/.envvars
+
+    PATH=$PATH
     minimal_setup
     default_setup
     optional_setup
+
+    echo "PATH=$PATH" >> $HOME/.envvars
     zsh
 elif [[ ${1} == "help" ]]
 then

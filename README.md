@@ -22,6 +22,7 @@ Install optional packages and configurations
 
 * **ranger** <br />
 * **pyenv** <br />
+* **rclone** <br />
 
 **To Do**
       
