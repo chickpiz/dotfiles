@@ -92,10 +92,10 @@ function emacs_setup {
 
     git clone --depth 1 https://github.com/hlissner/doom-emacs $HOME/.emacs.d
 
-    # INSTALL BEAR (SUPPORT FOR LSP)
+    # INSTALL BEAR (SUPPORT FOR C/C++ LSP)
     pkg_install "bear"
 
-    # INSTALL CCLS (SUPPORT FOR LSP)
+    # INSTALL CCLS (SUPPORT FOR C/C++ LSP)
     if lsb_release -a | grep -q '20.04'
     then
         pkg_install "ccls"
@@ -122,6 +122,11 @@ function emacs_setup {
         fi
     fi
 
+    # INSTALL PYLS (SUPPORT FOR PYTHON LSP)
+    pkg_install "python-pip python3-pip"
+    pip install python-language-server
+    pip3 install python-language-server
+
     # INSTALL CMAKE 3.18 (SUPPORT FOR VTERM)
     if cmake --version | grep -q 3.18
     then
@@ -145,7 +150,7 @@ function emacs_setup {
     $HOME/.emacs.d/bin/doom install
 
     rm -r $HOME/.doom.d
-    cp $DEFAULT/emacs/doom.d $HOME/.doom.d
+    cp -r $DEFAULT/emacs/doom.d $HOME/.doom.d
     $HOME/.emacs.d/bin/doom sync
 }
 
@@ -167,7 +172,7 @@ function i3_setup {
 
     mkdir -p $HOME/.config
 
-    cp $DEFULAT/i3/i3 $HOME/.config/i3
+    cp -r $DEFULAT/i3/i3 $HOME/.config/i3
     cp -r $DEFAULT/i3/i3status $HOME/.config/i3status
     cp -r $DEFAULT/i3/i3blocks $HOME/.config/i3blocks
 
@@ -178,7 +183,7 @@ function i3_setup {
 function vim_setup {
     pkg_install "vim"
 
-    cp -s $DEFAULT/vim/vimrc $HOME/.vimrc
+    cp $DEFAULT/vim/vimrc $HOME/.vimrc
 }
 
 function git_setup {
