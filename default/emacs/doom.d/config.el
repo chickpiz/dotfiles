@@ -54,9 +54,11 @@
 ;; they are implemented.
 
 ;; Automatically start lsp and smartparens
-(defun run-custom-hooks ()
+(defun run-custom-hooks (fill)
   (lsp 1)
   (smartparens-mode 1)
+  (setq-default fill-column fill)
+  (auto-fill-mode 1)
   )
 
 (defun run-tex-hooks ()
@@ -65,11 +67,11 @@
   (flyspell-mode 1)
   )
 
-(add-hook 'c-mode-hook 'run-custom-hooks)
-(add-hook 'c++-mode-hook 'run-custom-hooks)
-(add-hook 'python-mode-hook 'run-custom-hooks)
+(add-hook 'c-mode-hook (lambda() (run-custom-hooks 100)))
+(add-hook 'c++-mode-hook (lambda() (run-custom-hooks 100)))
+(add-hook 'python-mode-hook (lambda() (run-custom-hooks 80)))
 
-(add-hook 'Tex-mode-hook 'run-tex-hooks)
+(add-hook 'LaTeX-mode-hook 'run-tex-hooks)
 
 ;; doom emacs uses 'better-jumper', however 'xref-pop-marker-stack' is better
 (map! [remap xref-pop-marker-stack] nil)
