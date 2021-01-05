@@ -170,11 +170,32 @@ function i3_setup {
     pkg_install "rofi"
     pkg_install "feh"
 
-    mkdir -p $HOME/.config
+    # INSTALL Polybar 
+    if lsb_release -a | grep -q '20.04'
+    then
+        pkg_install "polybar"
+    else
+        pkg_install "cmake cmake-data libcairo2-dev libxcb1-dev libxcb-ewmh-dev \
+                     libxcb-icccm4-dev libxcb-image0-dev libxcb-randr0-dev \
+                     libxcb-util0-dev libxcb-xkb-dev pkg-config python-xcbgen \
+                     xcb-proto libxcb-xrm-dev i3-wm libasound2-dev libmpdclient-dev \
+                     libiw-dev libcurl4-openssl-dev libpulse-dev \
+                     libxcb-composite0-dev xcb libxcb-ewmh2"
+        git clone https://github.com/jaagr/polybar.git $HOME/.config/i3/polybar
+        pushd $HOME/.conmfig/i3/polybar
+        git checkout 3.4.1
+        ./build.sh
+    fi
 
-    cp -r $DEFULAT/i3/i3 $HOME/.config/i3
-    cp -r $DEFAULT/i3/i3status $HOME/.config/i3status
-    cp -r $DEFAULT/i3/i3blocks $HOME/.config/i3blocks
+    pkg_install "net-tools"
+
+    mkdir -p $HOME/.config/i3
+    mkdir -p $HOME/.config/i3/polybar
+
+    cp $DEFULAT/i3/config $HOME/.config/i3/config
+    cp $DEFAULT/i3/slow_mouse.sh $HOME/.config/i3/slow_mouse.sh
+    cp $DEFAULT/i3/polybar/config $HOME/.config/i3/polybar/config
+    cp $DEFAULT/i3/polybar/launch.sh $HOME/.config/i3/polybar/launch.sh
 
     git clone https://github.com/shikherverma/i3lock-multimonitor $HOME/.config/i3/i3lock-multimonitor
     sudo chmod +x $HOME/.config/i3/i3lock-multimonitor/lock

@@ -159,9 +159,8 @@ bindsym $mod+r mode "resize"
 # finds out, if available)
 
 bar {
+    i3bar_command $HOME/.config/i3/polybar/launch.sh
     position top
-    font pango:monospace 16
-    status_command i3blocks
 
     colors {
         background #282A36
@@ -175,12 +174,6 @@ bar {
         binding_mode       #FF5555 #FF5555 #F8F8F2
     }
 }
-
-# bar {
-#         font pango:monospace 16
-#         status_command i3status
-#         position top
-# }
 
 # dracula i3
 for_window [class="^.*"] border pixel 2
