@@ -73,6 +73,12 @@
 
 (add-hook 'LaTeX-mode-hook 'run-tex-hooks)
 
+;; open pdf file with evince when using org-mode
+(add-hook 'org-mode-hook
+          '(lambda ()
+             (delete '("\\.pdf\\" . default) org-file-apps)
+             (add-to-list 'org-file-apps '("\\.pdf\\'" . "evince %s"))))
+
 ;; doom emacs uses 'better-jumper', however 'xref-pop-marker-stack' is better
 (map! [remap xref-pop-marker-stack] nil)
 
@@ -82,3 +88,10 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(flyspell-incorrect ((t (:background "red" :underline nil)))))
+
+;; Key bindings for olivetti and focus
+(map! :leader
+      (:prefix "t"
+        :desc "Olivetti" "o" #'olivetti-mode
+        :desc "Focus" "c" #'focus-mode
+        ))
