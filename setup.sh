@@ -122,6 +122,8 @@ function emacs_setup {
         fi
     fi
 
+    pkg_install "clangd-9"
+
     # INSTALL PYLS (SUPPORT FOR PYTHON LSP)
     pkg_install "python-pip python3-pip"
     pip install python-language-server
@@ -138,6 +140,7 @@ function emacs_setup {
         popd 
 
         pushd $HOME/.emacs.d/cmake-3.18.0
+        ./configure
         make
         popd
 
@@ -175,14 +178,14 @@ function i3_setup {
     then
         pkg_install "polybar"
     else
-        pkg_install "cmake cmake-data libcairo2-dev libxcb1-dev libxcb-ewmh-dev \
+        pkg_install "cmake-data libcairo2-dev libxcb1-dev libxcb-ewmh-dev \
                      libxcb-icccm4-dev libxcb-image0-dev libxcb-randr0-dev \
                      libxcb-util0-dev libxcb-xkb-dev pkg-config python-xcbgen \
                      xcb-proto libxcb-xrm-dev i3-wm libasound2-dev libmpdclient-dev \
                      libiw-dev libcurl4-openssl-dev libpulse-dev \
                      libxcb-composite0-dev xcb libxcb-ewmh2"
         git clone https://github.com/jaagr/polybar.git $HOME/.config/i3/polybar
-        pushd $HOME/.conmfig/i3/polybar
+        pushd $HOME/.config/i3/polybar
         git checkout 3.4.1
         ./build.sh
     fi
