@@ -188,6 +188,7 @@ function i3_setup {
         pushd $HOME/.config/i3/polybar
         git checkout 3.4.1
         ./build.sh
+	popd
     fi
 
     pkg_install "net-tools"
@@ -250,18 +251,19 @@ function pyenv_setup {
     git clone https://github.com/pyenv/pyenv.git $HOME/.pyenv
     git clone git://github.com/pyenv/pyenv-update.git ~/.pyenv/plugins/pyenv-update
 
-    echo 'PYENV_ROOT="$HOME/.pyenv"' >> $HOME/.envvar
+    PYENV_ROOT=$HOME/.pyenv
+    echo 'PYENV_ROOT="$HOME/.pyenv"' >> $HOME/.envvars
     # echo 'export PYENV_ROOT="$HOME/.pyenv"' >> $HOME/.zshrc
     PATH=${PYENV_ROOT/bin}:$PATH
     # echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> $HOME/.zshrc
-    echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> $HOME/.zshrc
+    echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init --path)"\n  eval "$(pyenv init - @> dev/null)"\nfi' >> $HOME/.zshrc
 
-    pyenv update
-    pyenv install --list
+    $PYENV_ROOT/bin/pyenv update
+    $PYENV_ROOT/bin/pyenv install --list
     echo "[-] python version to install: "
     read -r version
 
-    pyenv install $version
+    $PYENV_ROOT/bin/pyenv install $version
 }
 
 function rclone_setup {
