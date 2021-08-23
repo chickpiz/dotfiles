@@ -53,6 +53,14 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
+;; Set path to zsh configuration
+(let ((path (shell-command-to-string ". $HOME/.zshrc; echo -n $PATH")))
+  (setenv "PATH" path)
+  (setq exec-path
+        (append
+         (split-string-and-unquote path ":")
+         exec-path)))
+
 ;; Automatically start lsp and smartparens
 (defun run-custom-hooks (fill)
   (lsp 1)

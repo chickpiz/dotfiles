@@ -88,7 +88,7 @@ function emacs_setup {
 
     sudo add-apt-repository ppa:kelleyk/emacs
     sudo apt-get update
-    pkg_install "emacs26"
+    pkg_install "emacs27"
 
     git clone --depth 1 https://github.com/hlissner/doom-emacs $HOME/.emacs.d
 
@@ -126,13 +126,13 @@ function emacs_setup {
 
     # INSTALL PYLS (SUPPORT FOR PYTHON LSP)
     pkg_install "python-pip python3-pip"
-    pip install python-language-server
-    pip3 install python-language-server
+    pip install python-lsp-server
+    pip3 install python-lsp-server
 
     # INSTALL CMAKE 3.18 (SUPPORT FOR VTERM)
     if cmake --version | grep -q 3.18
     then
-        "[-] cmake already 3.18"
+        echo "[-] cmake already 3.18"
     else
         pushd $HOME/.emacs.d
         wget https://github.com/Kitware/CMake/releases/download/v3.18.0/cmake-3.18.0.tar.gz
@@ -160,7 +160,7 @@ function emacs_setup {
 function tmux_setup {
     echo "[*] tmux_setup"
 
-    pkg_install "tmux"
+    pkg_install "tmux xclip"
     cp $DEFAULT/tmux/tmux.conf $HOME/.tmux.conf
 }
 
