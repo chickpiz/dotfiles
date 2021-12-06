@@ -2,13 +2,10 @@
 
 path=$(realpath ${1:-.})
 
-if [ ! -f $path ];
+if [ ! -d $path ];
 then
-    if [ ! -d $path ];
-    then
-        echo "$path does not exist"
-        exit 0
-    fi
+    echo "$path is not a directory"
+    exit 0
 fi
 
 if [[ ! "$path" == *"google-drive"* ]];

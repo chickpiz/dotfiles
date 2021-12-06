@@ -80,7 +80,8 @@ function zsh_setup {
     cp $DEFAULT/zsh/p10k.zsh $HOME/.p10k.zsh
 
     # Need to make not get password
-    chsh -s $(which zsh)
+    echo "sudo chsh -s $(which zsh) $USER"
+    sudo chsh -s $(which zsh) $USER
 }
 
 function emacs_setup {
@@ -254,9 +255,9 @@ function pyenv_setup {
     PYENV_ROOT=$HOME/.pyenv
     echo 'PYENV_ROOT="$HOME/.pyenv"' >> $HOME/.envvars
     # echo 'export PYENV_ROOT="$HOME/.pyenv"' >> $HOME/.zshrc
-    PATH=${PYENV_ROOT/bin}:$PATH
+    PATH=$PYENV_ROOT/bin:$PATH
     # echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> $HOME/.zshrc
-    echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init --path)"\n  eval "$(pyenv init - @> dev/null)"\nfi' >> $HOME/.zshrc
+    echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init --path)"\n  eval "$(pyenv init - @> /dev/null)"\nfi' >> $HOME/.zshrc
 
     $PYENV_ROOT/bin/pyenv update
     $PYENV_ROOT/bin/pyenv install --list
