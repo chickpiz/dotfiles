@@ -87,8 +87,8 @@
              (delete '("\\.pdf\\" . default) org-file-apps)
              (add-to-list 'org-file-apps '("\\.pdf\\'" . "evince %s"))))
 
-;; doom emacs uses 'better-jumper', however 'xref-pop-marker-stack' is better
-(map! [remap xref-pop-marker-stack] nil)
+;; doom emacs uses 'better-jumper', however 'xref-go-back' is better
+(map! [remap xref-go-back] nil)
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

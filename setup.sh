@@ -275,10 +275,10 @@ function rclone_setup {
     rclone config
 
     mkdir $HOME/google-drive
-    sudo ln -s $OPTIONAL/rclone/gsync /usr/bin/rclone
+    sudo ln -s $OPTIONAL/rclone/gsync /usr/bin/gsync
 
     echo "[-] register auto-backup"
-    (crontabl -l 2>/dev/null; echo "0 0 * * * gsync $HOME/google-drive > /dev/nul 2>&1") | crontab -e 
+    (crontab -l 2>/dev/null; echo "0 0 * * * gsync $HOME/google-drive > /dev/null 2>&1") | crontab -e 
 }
 
 #####################################################################
