@@ -68,11 +68,7 @@ function zsh_setup {
     source $DEFAULT/zsh/ohmyzsh.sh --skip-chsh
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
     pkg_install "autojump"
-    git clone https://github.com/wting/autojump ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/autojump
 
-    pushd ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/autojump
-    ./install.py
-    popd
     git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
     rm $HOME/.zshrc
@@ -97,33 +93,7 @@ function emacs_setup {
     pkg_install "bear"
 
     # INSTALL CCLS (SUPPORT FOR C/C++ LSP)
-    if lsb_release -a | grep -q '20.04'
-    then
-        pkg_install "ccls"
-    else
-        if command -v "ccls" 
-        then
-            echo "[-] ccls is already installed"
-            CCLS_PATH=$(which ccls)
-        else
-            pushd $HOME/.emacs.d
-            git clone --depth=1 --recursive https://github.com/MaskRay/ccls -o ccls
-            popd
-
-            pushd $HOME/.emacs.d/ccls
-            wget -c http://releases.llvm.org/8.0.0/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz
-            tar xf clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz
-            cmake -H. -BRelease -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$PWD/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-18.04
-            cmake --build Release
-            rm clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz
-            popd 
-
-            CCLS_PATH=$HOME/.emacs.d/ccls/Release
-            PATH=$PATH:${CCLS_PATH}
-        fi
-    fi
-
-    pkg_install "clangd-9"
+    pkg_install "ccls clangd-9"
 
     # INSTALL PYLS (SUPPORT FOR PYTHON LSP)
     pkg_install "python-pip python3-pip"
@@ -168,39 +138,41 @@ function tmux_setup {
 function i3_setup {
     echo "[*] i3_setup"
 
+    mkdir -p $HOME/.config/i3
+
     pkg_install "i3"
     pkg_install "i3lock"
     pkg_install "i3blocks"
     pkg_install "rofi"
     pkg_install "feh"
 
-    # INSTALL Polybar 
-    if lsb_release -a | grep -q '20.04'
-    then
-        pkg_install "polybar"
-    else
-        pkg_install "cmake-data libcairo2-dev libxcb1-dev libxcb-ewmh-dev \
-                     libxcb-icccm4-dev libxcb-image0-dev libxcb-randr0-dev \
-                     libxcb-util0-dev libxcb-xkb-dev pkg-config python-xcbgen \
-                     xcb-proto libxcb-xrm-dev i3-wm libasound2-dev libmpdclient-dev \
-                     libiw-dev libcurl4-openssl-dev libpulse-dev \
-                     libxcb-composite0-dev xcb libxcb-ewmh2"
-        git clone https://github.com/jaagr/polybar.git $HOME/.config/i3/polybar
-        pushd $HOME/.config/i3/polybar
-        git checkout 3.4.1
-        ./build.sh
-	popd
-    fi
+    # INSTALL Polybar for Ubuntu 20.04
+    pkg_install "build-essential git cmake cmake-data pkg-config python3-sphinx \
+                 python3-packaging libuv1-dev libcairo2-dev libxcb1-dev libxcb-util0-dev \
+                 libxcb-randr0-dev libxcb-composite0-dev python3-xcbgen xcb-proto \ 
+                 libxcb-image0-dev libxcb-ewmh-dev libxcb-icccm4-dev"
+
+    pkg_install "libxcb-xkb-dev libxcb-xrm-dev libxcb-cursor-dev libasound2-dev \ 
+                 libpulse-dev i3-wm libjsoncpp-dev libmpdclient-dev libcurl4-openssl-dev \
+                 libnl-genl-3-dev"
+
+    git clone --depth 1 -b 3.6.3 --recursive https://github.com/polybar/polybar $HOME/.config/i3/polybar
+    mkdir $HOME/.config/i3/polybar/build
+    pushd $HOME/.config/i3/polybar/build
+    cmake ..
+    make -j4
+    sudo make install
+    popd
 
     pkg_install "net-tools"
-
-    mkdir -p $HOME/.config/i3
-    mkdir -p $HOME/.config/i3/polybar
 
     cp $DEFULAT/i3/config $HOME/.config/i3/config
     cp $DEFAULT/i3/slow_mouse.sh $HOME/.config/i3/slow_mouse.sh
     cp $DEFAULT/i3/polybar/config $HOME/.config/i3/polybar/config
     cp $DEFAULT/i3/polybar/launch.sh $HOME/.config/i3/polybar/launch.sh
+
+    mkdir -p $HOME/.screenlayout
+    cp $DEFAULT/i3/dual-monitor.sh $HOME/.screenlayout/dual-monitor.sh
 
     git clone https://github.com/shikherverma/i3lock-multimonitor $HOME/.config/i3/i3lock-multimonitor
     sudo chmod +x $HOME/.config/i3/i3lock-multimonitor/lock
