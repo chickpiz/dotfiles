@@ -57,8 +57,12 @@ function minimal_setup {
 
 #################### SETTING UP DEFAULT PACKAGES ####################
 #   INCLUDED PACKAGES:                                              #
-#       zsh emacs tmux vim git                                      #
+#       zsh emacs tmux vim git docker                               #
 #####################################################################
+
+function nosudo {
+    sudo echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo EDITOR='tee -a' visudo
+}
 
 function zsh_setup {
     echo "[*] zsh_setup"
@@ -204,6 +208,20 @@ function git_setup {
     cp $DEFAULT/git/gitmessage.txt $HOME/.gitmessage.txt
 }
 
+function docker_setup {
+    pkg_install "ca-certificates curl gnupg lsb-release"
+
+    sudo mkdir -p /etc/apt/keyrings
+    curl -fsSl https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    sudo apt update
+    pkg_install "docker-ce docker-ce-cli containerd.io docker-compose-plugin"
+
+    sudo docker run hello-world
+    sudo usermod -aG docker $USER
+}
+
 #################### SETTING UP OPTIONAL PACKAGES ################### 
 #   INCLUDED PACKAGES:                                              #
 #       ranger pyenv rclone                                         #
@@ -258,12 +276,16 @@ function rclone_setup {
 function default_setup {
     echo "[*] default setup"
 
+    sudo apt update
+
+    nosudo
     git_setup
     zsh_setup
     emacs_setup
     tmux_setup
     i3_setup
     vim_setup
+    docker_setup
 }
 
 function optional_setup {
