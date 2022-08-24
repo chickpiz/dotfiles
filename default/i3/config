@@ -153,7 +153,7 @@ bindsym $mod+r mode "resize"
 # Single monitor
 # bindsym $mod+q exec --no-startup-id i3lock -i $(find $HOME/Pictures/ -name "*.png" | shuf -n1)
 # Dual monitor
-bindsym $mod+q exec --no-startup-id $HOME/.config/i3/i3lock-multimonitor/lock -i $(find $HOME/Pictures/ -name "*.png" | shuf -n1)
+bindsym $mod+q exec --no-startup-id $HOME/.config/i3/i3lock-multimonitor/lock -i $(find $HOME/Pictures/right/ -name "*.jpg" | shuf -n1)
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
@@ -199,5 +199,7 @@ exec setxkbmap -option "ctrl:nocaps"
 # Single monitor 
 # exec --no-startup-id feh --randomize --fullscreen -bg-fill $HOME/Pictures/*.png
 # Dual monitor
-# exec --no-startup-id feh --bg-fill $(find $HOME/Pictures/left/ -name "*.png" | shuf -n1)  --bg-fill $(find $HOME/Pictures/right/ -name "*.png" | shuf -n1)
+exec_always /home/jwhur/.screenlayout/dual-monitor.sh
 
+# workspace 1 output DP-4
+# workspace 2 output HDMI-0

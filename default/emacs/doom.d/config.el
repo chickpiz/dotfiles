@@ -103,3 +103,20 @@
         :desc "Olivetti" "o" #'olivetti-mode
         :desc "Focus" "c" #'focus-mode
         ))
+
+;; suspend-frame is annoying
+(global-unset-key (kbd "C-x C-z"))
+
+;; Latex pdf view
+(after! tex
+  (setq TeX-view-program-selection
+   '((output-pdf "Evince")
+     ((output-dvi has-no-display-manager)
+      "dvi2tty")
+     ((output-dvi style-pstricks)
+      "dvips and gv")
+     (output-dvi "xdvi")
+     (output-pdf "PDF Tools")
+     (output-html "xdg-open")
+     (output-pdf "preview-pane")))
+  )
