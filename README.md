@@ -1,28 +1,17 @@
-Dotfiles for Linux systems
+Dotfiles EndeavorOS (archlinux)
 =============================
 
-Default
+Installation List
 ---------
 
-Install default packages and configurations:
-* **zsh** <br />
- oh-my-zshell (powerlevel10k theme)
-* **emacs** <br />
- doom emacs
-* **tmux**
+* **git**
 * **i3**
-* **etc** <br />
- envvars (**Settings for custom environment variables**)
-
-
-Optional
----------
-
-Install optional packages and configurations
-
-* **ranger** <br />
-* **pyenv** <br />
-* **rclone** <br />
-
-**To Do**
-      
+* **vim**
+* **zsh**
+* **tmux**
+* **evince**
+* **rclone**
+* **pyenv**
+* **ranger**
+* **docker**
+* **vscode**
