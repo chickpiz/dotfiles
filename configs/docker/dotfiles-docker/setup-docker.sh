@@ -39,7 +39,7 @@ function zsh_setup {
         cp $CONFIGS/zsh/zshrc $HOME/.zshrc
         cp $CONFIGS/zsh/p10k.zsh $HOME/.p10k.zsh
 
-        echo "FZF_CONFIGS_COMMAND='fd -type f'" >> $HOME/.envvars
+        echo "export FZF_CONFIGS_COMMAND='fd -type f'" >> $HOME/.envvars
 
         # Need to make not get password
         echo "sudo chsh -s $(which zsh) $USER"
@@ -75,7 +75,7 @@ function pyenv_setup {
     git clone https://github.com/pyenv/pyenv-update.git ~/.pyenv/plugins/pyenv-update
 
     PYENV_ROOT=$HOME/.pyenv
-    echo 'PYENV_ROOT="$HOME/.pyenv"' >> $HOME/.envvars
+    echo 'export PYENV_ROOT="$HOME/.pyenv"' >> $HOME/.envvars
     PATH=$PYENV_ROOT/bin:$PATH
 
     echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init --path)"\n  eval "$(pyenv init - @> /dev/null)"\nfi' >> $HOME/.zshrc
@@ -101,7 +101,7 @@ function setup {
     tmux_setup
     pyenv_setup
 
-    echo "PATH=$PATH" >> $HOME/.envvars
+    echo "export PATH=$PATH" >> $HOME/.envvars
 }
 
 setup
