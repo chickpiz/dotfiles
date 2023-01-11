@@ -22,7 +22,7 @@ function nosudo {
 function git_setup {
     echo "[*] git_setup"
 
-    cp $CONFIG/git/gitconfig $HOME/.gitconfig
+    cp $CONFIGS/git/gitconfig $HOME/.gitconfig
 }
 
 function i3_setup {
@@ -144,6 +144,17 @@ function _docker_setup {
 
 function vscode_setup {
     install "visual-studio-code-bin"
+}
+
+function emacs_setup {
+    install "emacs"
+
+    git clone --depth 1 https://github.com/hlissner/doom-emacs $HOME/.emacs.d
+    $HOME/.emacs.d/bin/doom install
+
+    rm -rf $HOME/.doom.d
+    cp -r $CONFIGS/emacs/doom.d $HOME/.doom.d
+    $HOME/.emacs.d/bin/doom sync
 }
 
 ###############################################################################
