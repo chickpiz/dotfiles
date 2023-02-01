@@ -89,7 +89,7 @@ function rclone_setup {
 
     echo "[*] setup automatic syncing"
     SYNC_SCRIPT="$HOME/.config/rclone/rclone-sync.sh"
-    cp $OPTIONAL/rclone/rclone-sync.sh $SYNC_SCRIPT
+    cp $CONFIGS/rclone/rclone-sync.sh $SYNC_SCRIPT
 
     sudo loginctl enable-linger $USER
     if loginctl show-user $USER | grep "Linger=no"; then
@@ -155,6 +155,44 @@ function emacs_setup {
     rm -rf $HOME/.doom.d
     cp -r $CONFIGS/emacs/doom.d $HOME/.doom.d
     $HOME/.emacs.d/bin/doom sync
+}
+
+function xclip_setup {
+    echo "[*] xclip setup"
+    install "xclip"
+
+    echo "[*] setup listening on port 19988"
+    echo "[-] please remove firewall for port 19988"
+    XCLIP_SCRIPT="$HOME/.config/xclip/xclip-listen.sh"
+    cp $CONFIGS/xclip/xclip-listen.sh $XCLIP_SCRIPT
+
+    sudo loginctl enable-linger $USER
+    if loginctl show-user $USER | grep "Linger=no"; then
+        echo "[-] cannot enable Linger"
+        exit 1
+    fi
+
+    mkdir -p $HOME/.config/systemd/user
+    SERVICE_FILE=$HOME/.config/systemd/user/xclip_listener.service
+    if test -f $SERVICE_FILE; then
+        echo "[-] Unit file already exists: $SERVICE_FILE - Not overwritting"
+    else
+        cat << EOF > $SERVICE_FILE
+[Unit]
+Description=Network copy backend for tmux based on xclip
+After=syslog.target network.target sockets.target network-online.target multi-user.target
+
+[Service]
+ExecStart=$XCLIP_SCRIPT
+
+[Install]
+WantedBy=default.target
+EOF
+    fi
+
+    systemctl --user daemon-reload
+    systemctl --user enable --now xclip_listener.service
+    systemctl --user status xclip_listener.service
 }
 
 ###############################################################################

@@ -50,7 +50,7 @@ function zsh_setup {
 function tmux_setup {
     echo "[*] tmux_setup"
 
-    install "tmux xclip"
+    install "tmux xclip netcat"
     cp $CONFIGS/tmux/tmux.conf $HOME/.tmux.conf
 }
 
