@@ -54,6 +54,8 @@ function zsh_setup {
     cp $CONFIGS/zsh/zshrc $HOME/.zshrc
     cp $CONFIGS/zsh/p10k.zsh $HOME/.p10k.zsh
 
+    install "fzf"
+
     echo "export FZF_CONFIGS_COMMAND='fd -type f'" >> $HOME/.envvars
 
     echo "[+] Changing default shell"
