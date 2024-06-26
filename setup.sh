@@ -5,9 +5,9 @@ CONFIGS=$PWD/configs
 function install {
     for pkg in $1;
     do
-        if [ "$(pacsift --exact --name $pkg)" ]; then
+        if [ $(pacman -Sqs $pkg | grep "^$pkg$") ]; then
             sudo pacman -Sy --needed --noconfirm $pkg
-        elif [ "$(yay -Qk $pkg)" ]; then
+        elif [ $(yay -Sqs $pkg | grep "^$pkg$") ]; then
             yay -Sy --needed --noconfirm $pkg
         fi
     done
@@ -44,7 +44,7 @@ function zsh_setup {
 
     install "zsh"
 
-    echo "[+] oh-my-szh autojump autosuggestion"
+    echo "[+] oh-my-szh"
 
     source $CONFIGS/zsh/ohmyzsh.sh --skip-chsh
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
@@ -54,7 +54,7 @@ function zsh_setup {
     cp $CONFIGS/zsh/zshrc $HOME/.zshrc
     cp $CONFIGS/zsh/p10k.zsh $HOME/.p10k.zsh
 
-    install "fzf"
+    install "ttf-hack autojump fzf"
 
     echo "export FZF_CONFIGS_COMMAND='fd -type f'" >> $HOME/.envvars
 
@@ -131,6 +131,10 @@ function ranger_setup {
     echo "[*] ranger_setup"
 
     install "ranger"
+
+    echo """
+UXTerm*faceName: Hack
+UXTerm*faceSize: 18""" >> $HOME/.Xresources
 }
 
 function _docker_setup {
@@ -216,4 +220,12 @@ function setup {
     vscode_setup
 }
 
-setup
+# MAIN
+if [[ ${1} == "" ]]
+then
+    setup
+elif [[ ${1} == "help" ]]
+    echo "[*] See code!"
+else
+    ${1}_setup
+fi
