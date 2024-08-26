@@ -43,9 +43,6 @@
     "vim.handleKeys": {
         "g d": false,
     },
-    "remote.SSH.remotePlatform": {
-        "jwhur": "linux"
-    },
     "settingsSync.keybindingsPerPlatform": false,
     "python.envFile": "${workspaceFolder}/.env",
     "python.formatting.provider": "none",

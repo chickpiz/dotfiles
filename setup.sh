@@ -5,9 +5,9 @@ CONFIGS=$PWD/configs
 function install {
     for pkg in $1;
     do
-        if [ $(pacman -Sqs $pkg | grep "^$pkg$") ]; then
+        if [ "$(pacsift --exact --name $pkg)" ]; then
             sudo pacman -Sy --needed --noconfirm $pkg
-        elif [ $(yay -Sqs $pkg | grep "^$pkg$") ]; then
+        elif [ "$(yay -Qk $pkg)" ]; then
             yay -Sy --needed --noconfirm $pkg
         fi
     done
@@ -22,13 +22,25 @@ function nosudo {
 function git_setup {
     echo "[*] git_setup"
 
+    install "git"
+
     cp $CONFIGS/git/gitconfig $HOME/.gitconfig
+}
+
+function gdb_setup {
+    echo "[*] gdb_setup"
+
+    install "gdb"
+
+    cp $CONFIGS/gdb/gdbinit $HOME/.config/gdb/gdbinit
+    cp $CONFIGS/gdb/gdbinit-gef.py $HOME/.gdbinit-gef.py
 }
 
 function i3_setup {
     echo "[*] i3_setup"
 
     cp $CONFIGS/i3/config $HOME/.config/i3/config
+    cp $CONFIGS/i3/i3blocks.conf $HOME/.config/i3/i3blocks.conf
 }
 
 function vim_setup {
@@ -39,12 +51,19 @@ function vim_setup {
     cp $CONFIGS/vim/vimrc $HOME/.vimrc
 }
 
+function bash_setup {
+    echo "[*] bash_setup"
+
+    cp $CONFIGS/bashrc $HOME/.bashrc
+    cp $CONFIGS/bash_profile $HOME/.bash_profile
+}
+
 function zsh_setup {
     echo "[*] zsh_setup"
 
     install "zsh"
 
-    echo "[+] oh-my-szh"
+    echo "[+] oh-my-szh autojump autosuggestion"
 
     source $CONFIGS/zsh/ohmyzsh.sh --skip-chsh
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
@@ -54,7 +73,7 @@ function zsh_setup {
     cp $CONFIGS/zsh/zshrc $HOME/.zshrc
     cp $CONFIGS/zsh/p10k.zsh $HOME/.p10k.zsh
 
-    install "ttf-hack autojump fzf"
+    install "fzf"
 
     echo "export FZF_CONFIGS_COMMAND='fd -type f'" >> $HOME/.envvars
 
@@ -68,12 +87,21 @@ function tmux_setup {
     install "tmux xclip"
 
     cp $CONFIGS/tmux/tmux.conf $HOME/.tmux.conf
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 }
 
 function evince_setup {
     echo "[*] evince_setup"
 
     install "evince"
+}
+
+function fcitx5_setup {
+    echo "[*] fcitx5_setup"
+
+    install "fcitx5 fcitx5-configtool fcitx5-hangul fcitx5-gtk"
+
+    cp -r $CONFIGS/fcitx5 $HOME/.config/fcitx5
 }
 
 function rclone_setup {
@@ -131,10 +159,6 @@ function ranger_setup {
     echo "[*] ranger_setup"
 
     install "ranger"
-
-    echo """
-UXTerm*faceName: Hack
-UXTerm*faceSize: 18""" >> $HOME/.Xresources
 }
 
 function _docker_setup {
@@ -206,13 +230,16 @@ EOF
 function setup {
     set -ex
 
-    nosudo
+    # nosudo
     git_setup
+    gdb_setup
     i3_setup
     vim_setup
+    bash_setup
     zsh_setup
     tmux_setup
     evince_setup
+    fcitx5_setup
     rclone_setup
     pyenv_setup
     ranger_setup
@@ -220,12 +247,4 @@ function setup {
     vscode_setup
 }
 
-# MAIN
-if [[ ${1} == "" ]]
-then
-    setup
-elif [[ ${1} == "help" ]]
-    echo "[*] See code!"
-else
-    ${1}_setup
-fi
+setup
