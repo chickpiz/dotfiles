@@ -1,30 +1,44 @@
-#!/usr/bin/bash
+#!/bin/bash
+set -ex
 
 CONFIGS=$PWD/configs
 
 function install {
-    for pkg in $1;
+    for pkg in $1
     do
-        if [ "$(pacsift --exact --name $pkg)" ]; then
-            sudo pacman -Sy --needed --noconfirm $pkg
-        elif [ "$(yay -Qk $pkg)" ]; then
-            yay -Sy --needed --noconfirm $pkg
+        if [[ $pkg != "\\" ]]
+        then
+            if [[ $(dpkg -s ${pkg} | grep Status) == *"installed" ]]
+            then 
+                echo "[-] $1 is already installed"
+            else
+                sudo apt install -y $1
+            fi
         fi
     done
 }
 
-function nosudo {
-    echo "[*] nosudo"
-
-    sudo bash -c "echo '$USER ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers"
-}
 
 function git_setup {
     echo "[*] git_setup"
 
     install "git"
-
+    
     cp $CONFIGS/git/gitconfig $HOME/.gitconfig
+
+    echo "[-] git config --global user.name: "
+    read -r username
+    git config --global user.name $username
+
+    echo "[-] git config --global user.email: "
+    read -r useremail
+    git config --global user.email $useremail
+
+    echo "[-] git config --global editor"
+    git config --global core.editor vim
+
+    cp $CONFIGS/git/gitmessage.txt $HOME/.gitmessage.txt
+
 }
 
 function gdb_setup {
@@ -39,8 +53,26 @@ function gdb_setup {
 function i3_setup {
     echo "[*] i3_setup"
 
+    mkdir -p $HOME/.config/i3
+
+    install "i3"
+    install "i3blocks"
+    install "i3lock"
+    install "rofi"
+    install "feh"
+    install "polybar"
+    install "net-tools"
+    
     cp $CONFIGS/i3/config $HOME/.config/i3/config
     cp $CONFIGS/i3/i3blocks.conf $HOME/.config/i3/i3blocks.conf
+    cp $CONFIGS/i3/polybar/config $HOME/.config/i3/polybar/config
+    cp $CONFIGS/i3/polybar/launch.sh $HOME/.config/i3/polybar/launch.sh
+
+    mkdir -p $HOME/.screenlayout
+    cp $DEFAULT/i3/dual-monitor.sh $HOME/.screenlayout/dual-monitor.sh
+
+    git clone https://github.com/shikherverma/i3lock-multimonitor $HOME/.config/i3/i3lock-multimonitor
+    sudo chmod +x $HOME/.config/i3/i3lock-multimonitor/lock
 }
 
 function vim_setup {
@@ -104,6 +136,10 @@ function fcitx5_setup {
     cp -r $CONFIGS/fcitx5 $HOME/.config/fcitx5
 }
 
+function arandr_setup {
+    install "arandr"
+}
+
 function rclone_setup {
     echo "[*] rclone_setup"
     install "rclone inotify-tools"
@@ -146,6 +182,69 @@ EOF
     systemctl --user daemon-reload
     systemctl --user enable --now rclone_sync.google-drive
     systemctl --user status rclone_sync.google-drive
+}
+
+function _rclone_setup {
+    echo "[*] rclone_setup"
+    #install "rclone inotify-tools"
+
+    echo "[+] configure rclone, type absolute path to local directory you want to mount:"
+    read -r LOCAL_DIR
+
+    echo "[*] setup google-drive"
+    rclone config
+
+    #mkdir $LOCAL_DIR
+    rclone sync --verbose  "google-drive:/" $LOCAL_DIR
+
+    echo "[*] setup automatic syncing"
+    SYNC_SCRIPT="$HOME/.config/rclone/rclone-sync.sh"
+    cp $CONFIGS/rclone/rclone-sync.sh $SYNC_SCRIPT
+
+    sudo loginctl enable-linger $USER
+    if loginctl show-user $USER | grep "Linger=no"; then
+        echo "[-] cannot enable Linger"
+        exit 1
+    fi
+
+    mkdir -p $HOME/.config/systemd/user
+    SERVICE_FILE=$HOME/.config/systemd/user/rclone_sync.google-drive.service
+    if test -f $SERVICE_FILE; then
+        echo "[-] Unit file already exists: $SERVICE_FILE - Not overwriting"
+    else
+        cat << EOF > $SERVICE_FILE
+[Unit]
+Description=rclone-sync google-drive
+
+[Service]
+ExecStart=$SYNC_SCRIPT google-drive: $LOCAL_DIR
+
+[Install]
+WantedBy=default.target
+EOF
+    fi
+    systemctl --user daemon-reload
+    systemctl --user enable --now rclone_sync.google-drive
+    systemctl --user status rclone_sync.google-drive
+}
+
+function rclone_setup {
+    echo "[*] rclone_setup"
+    #pkg_install "rclone"
+
+    #echo "[+] configure rclone, type absolute path to local directory you want to mount:"
+    #read -r LOCAL_DIR
+    rclone config
+
+    #mkdir $LOCAL_DIR
+    rclone sync --verbose  "google-drive:/" $LOCAL_DIR
+
+    echo "[*] setup automatic syncing"
+    SYNC_SCRIPT="$HOME/.config/rclone/rclone-sync.sh"
+    cp $CONFIGS/rclone/rclone-sync.sh $SYNC_SCRIPT
+
+    echo "[-] register auto-backup"
+    (crontab -l 2>/dev/null; echo "0 0 * * * gsync $HOME/google-drive > /dev/null 2>&1") | crontab -e 
 }
 
 
@@ -228,23 +327,24 @@ EOF
 ###############################################################################
 
 function setup {
-    set -ex
+    #sudo apt update
 
     # nosudo
-    git_setup
-    gdb_setup
-    i3_setup
-    vim_setup
-    bash_setup
-    zsh_setup
-    tmux_setup
-    evince_setup
-    fcitx5_setup
-    rclone_setup
-    pyenv_setup
-    ranger_setup
-    _docker_setup
-    vscode_setup
+    #git_setup
+    #gdb_setup
+    #i3_setup
+    #vim_setup
+    #bash_setup
+    #zsh_setup
+    #tmux_setup
+    #evince_setup
+    #fcitx5_setup
+    #_rclone_setup
+    #arandr_setup
+    #pyenv_setup
+    #ranger_setup
+    #_docker_setup
+    #vscode_setup
 }
 
 setup
