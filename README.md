@@ -1,4 +1,4 @@
-Dotfiles EndeavorOS (archlinux)
+Dotfiles Ubuntu 22.04
 =============================
 
 Installation List
@@ -12,7 +12,8 @@ Installation List
 * **zsh**
 * **tmux**
 * **evince**
-* **fcitx5**
+* **arandr**
+* **qogir**
 * **rclone**
 * **pyenv**
 * **ranger**
