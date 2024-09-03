@@ -137,7 +137,33 @@ function fcitx5_setup {
 }
 
 function arandr_setup {
+    echo "[*] arandr_setup"
+
     install "arandr"
+}
+
+function qogir_setup {
+    echo "[*] qogir_setup"
+
+    mkdir tmp
+
+    pushd ./tmp
+    git clone https://github.com/vinceliuice/Qogir-theme
+    pushd ./Qogir-theme
+    ./install.sh
+    popd
+
+    git clone https://github.com/vinceliuice/Qogir-icon-theme
+    pushd ./Qogir-icon-theme
+    ./install.sh
+    popd
+    popd
+
+    sudo cp -r .local/share/icons/Qogir /usr/share/icons
+    sudo cp -r .local/share/icons/Qogir-dark /usr/share/icons
+    sudo cp -r .local/share/icons/Qogir-light /usr/share/icons
+
+    rm -rf tmp
 }
 
 function rclone_setup {
@@ -341,6 +367,7 @@ function setup {
     #fcitx5_setup
     #_rclone_setup
     #arandr_setup
+    #qogir_setup
     #pyenv_setup
     #ranger_setup
     #_docker_setup
