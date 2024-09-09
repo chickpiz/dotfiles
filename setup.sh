@@ -64,12 +64,17 @@ function i3_setup {
     install "net-tools"
     
     cp $CONFIGS/i3/config $HOME/.config/i3/config
+    cp -r $CONFIGS/i3/scripts $HOME/.config/i3/
     cp $CONFIGS/i3/i3blocks.conf $HOME/.config/i3/i3blocks.conf
     cp $CONFIGS/i3/polybar/config $HOME/.config/i3/polybar/config
     cp $CONFIGS/i3/polybar/launch.sh $HOME/.config/i3/polybar/launch.sh
 
+    cp -r $CONFIGS/rofi $HOME/.config
+    cp -r $CONFIGS/rofi_themes/themes $HOME/.local/share/rofi
+
     mkdir -p $HOME/.screenlayout
-    cp $DEFAULT/i3/dual-monitor.sh $HOME/.screenlayout/dual-monitor.sh
+    cp $CONFIGS/i3/dual-monitor.sh $HOME/.screenlayout/dual-monitor.sh
+    cp bg.png $HOME/.screenlayout/bg.png
 
     git clone https://github.com/shikherverma/i3lock-multimonitor $HOME/.config/i3/i3lock-multimonitor
     sudo chmod +x $HOME/.config/i3/i3lock-multimonitor/lock
@@ -86,8 +91,8 @@ function vim_setup {
 function bash_setup {
     echo "[*] bash_setup"
 
-    cp $CONFIGS/bashrc $HOME/.bashrc
-    cp $CONFIGS/bash_profile $HOME/.bash_profile
+    cp $CONFIGS/bash/bashrc $HOME/.bashrc
+    #cp $CONFIGS/bash/bash_profile $HOME/.bash_profile
 }
 
 function zsh_setup {
@@ -256,13 +261,13 @@ EOF
 
 function rclone_setup {
     echo "[*] rclone_setup"
-    #pkg_install "rclone"
+    install "rclone"
 
-    #echo "[+] configure rclone, type absolute path to local directory you want to mount:"
-    #read -r LOCAL_DIR
+    echo "[+] configure rclone, type absolute path to local directory you want to mount:"
+    read -r LOCAL_DIR
     rclone config
 
-    #mkdir $LOCAL_DIR
+    mkdir $LOCAL_DIR
     rclone sync --verbose  "google-drive:/" $LOCAL_DIR
 
     echo "[*] setup automatic syncing"
@@ -287,7 +292,7 @@ function ranger_setup {
 }
 
 function _docker_setup {
-    install "docker"
+    #install "docker.io"
 
     sudo systemctl enable --now docker.service
     sudo usermod -aG docker $USER
@@ -298,7 +303,7 @@ function _docker_setup {
 }
 
 function vscode_setup {
-    install "visual-studio-code-bin"
+    install "code"
 }
 
 function emacs_setup {
@@ -357,7 +362,7 @@ function setup {
 
     # nosudo
     #git_setup
-    #gdb_setup
+    gdb_setup
     #i3_setup
     #vim_setup
     #bash_setup
