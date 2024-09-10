@@ -101,7 +101,7 @@ function fcitx5_setup {
 
     install "fcitx5 fcitx5-configtool fcitx5-hangul fcitx5-gtk"
 
-    cp -r $CONFIGS/fcitx5 $HOME/.config/fcitx5
+    cp -r $CONFIGS/fcitx5 $HOME/.config
 }
 
 function rclone_setup {
@@ -174,6 +174,9 @@ function _docker_setup {
 
 function vscode_setup {
     install "visual-studio-code-bin"
+
+    mkdir $CONFIGS/Code
+    cp -r $CONFIGS/Code/User $HOME/Code
 }
 
 function emacs_setup {
