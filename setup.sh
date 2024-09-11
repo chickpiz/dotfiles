@@ -42,7 +42,6 @@ function i3_setup {
     cp $CONFIGS/i3/config $HOME/.config/i3/config
     cp $CONFIGS/i3/i3blocks.conf $HOME/.config/i3/i3blocks.conf
     mkdir -p $HOME/.screenlayout
-    cp $CONFIGS/i3/dual-monitor.sh $HOME/.screenlayout/dual-monitor.sh
     cp bg.png $HOME/.screenlayout/bg.png
 }
 
@@ -57,8 +56,7 @@ function vim_setup {
 function bash_setup {
     echo "[*] bash_setup"
 
-    cp $CONFIGS/bashrc $HOME/.bashrc
-    cp $CONFIGS/bash_profile $HOME/.bash_profile
+    cp $CONFIGS/bash/bashrc $HOME/.bashrc
 }
 
 function zsh_setup {
@@ -178,8 +176,8 @@ function _docker_setup {
 function vscode_setup {
     install "visual-studio-code-bin"
 
-    mkdir $CONFIGS/Code
-    cp -r $CONFIGS/Code/User $HOME/Code
+    mkdir -p $HOME/.config/Code
+    cp -r $CONFIGS/Code/User $HOME/.config/Code
 }
 
 function emacs_setup {
@@ -237,19 +235,19 @@ function setup {
     set -ex
 
     # nosudo
-    git_setup
-    gdb_setup
-    i3_setup
-    vim_setup
-    bash_setup
-    zsh_setup
-    tmux_setup
-    evince_setup
-    fcitx5_setup
-    rclone_setup
-    pyenv_setup
-    ranger_setup
-    _docker_setup
+    #git_setup
+    #gdb_setup
+    #i3_setup
+    #vim_setup
+    #bash_setup
+    #zsh_setup
+    #tmux_setup
+    #evince_setup
+    #fcitx5_setup
+    #rclone_setup
+    #pyenv_setup
+    #ranger_setup
+    #_docker_setup
     vscode_setup
 }
 
