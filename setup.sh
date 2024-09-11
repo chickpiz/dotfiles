@@ -41,6 +41,9 @@ function i3_setup {
 
     cp $CONFIGS/i3/config $HOME/.config/i3/config
     cp $CONFIGS/i3/i3blocks.conf $HOME/.config/i3/i3blocks.conf
+    mkdir -p $HOME/.screenlayout
+    cp $CONFIGS/i3/dual-monitor.sh $HOME/.screenlayout/dual-monitor.sh
+    cp bg.png $HOME/.screenlayout/bg.png
 }
 
 function vim_setup {
